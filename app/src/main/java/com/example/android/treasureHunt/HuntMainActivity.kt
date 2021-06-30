@@ -100,7 +100,7 @@ class HuntMainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // TODO: Step 7 add code to check that the user turned on their device location and ask
-        //  again if they did not
+        //  again if they did not //DONE
         if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON) {
             checkDeviceLocationSettingsAndStartGeofence(false)
         }
@@ -329,7 +329,20 @@ class HuntMainActivity : AppCompatActivity() {
      * permission.
      */
     private fun removeGeofences() {
-        // TODO: Step 12 add in code to remove the geofences
+        // TODO: Step 12 add in code to remove the geofences //DONE
+        if (!foregroundAndBackgroundLocationPermissionApproved()) {
+            return
+        }
+        geofencingClient.removeGeofences(geofencePendingIntent)?.run {
+            addOnSuccessListener {
+                Log.d(TAG, getString(R.string.geofences_removed))
+                Toast.makeText(applicationContext, R.string.geofences_removed, Toast.LENGTH_SHORT)
+                    .show()
+            }
+            addOnFailureListener {
+                Log.d(TAG, getString(R.string.geofences_not_removed))
+            }
+        }
     }
     companion object {
         internal const val ACTION_GEOFENCE_EVENT =
